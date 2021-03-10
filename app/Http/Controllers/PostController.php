@@ -1,85 +1,55 @@
 <?php
-
+ 
 namespace App\Http\Controllers;
-
-use App\Models\Post;
+ 
 use Illuminate\Http\Request;
+use App\Http\Resources\PostCollection;
+use App\Models\Post;
 
+ 
 class PostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    // all posts
     public function index()
     {
-        //
+        $posts = Post::all()->toArray();
+        return array_reverse($posts);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+ 
+    // add post
+    public function add(Request $request)
     {
-        //
+        $post = new Post([
+            'title' => $request->input('title'),
+            'description' => $request->input('description')
+        ]);
+        $post->save();
+ 
+        return response()->json('The post successfully added');
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+ 
+    // edit post
+    public function edit($id)
     {
-        //
+        $post = Post::find($id);
+        return response()->json($post);
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Post  $post
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Post $post)
+ 
+    // update post
+    public function update($id, Request $request)
     {
-        //
+        $post = Post::find($id);
+        $post->update($request->all());
+ 
+        return response()->json('The post successfully updated');
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Post  $post
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Post $post)
+ 
+    // delete post
+    public function delete($id)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Post  $post
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Post $post)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Post  $post
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Post $post)
-    {
-        //
+        $post = Post::find($id);
+        $post->delete();
+ 
+        return response()->json('The post successfully deleted');
     }
 }
